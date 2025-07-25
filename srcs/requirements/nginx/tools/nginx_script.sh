@@ -1,0 +1,11 @@
+#!/bin/bash
+DOMAIN="$USER$DOMAIN_SUFFIX"
+
+if [ -f /my_nginx.conf ]; then
+
+	# Generating a self signing certificate and a private key with OpenSSL #
+	echo "Generating key and certificate (OpenSSL) ..."
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+	-keyout /etc/ssl/private/$DOMAIN.key \
+	-out /etc/ssl/certs/$DOMAIN.crt \
+	-subj "/C=PT/L=Lisbon/O=42Lisboa/OU=student/CN=$DOMAIN/UID=$USER" > /dev/null 2>&1
