@@ -1,6 +1,73 @@
+version: '3'
+
+# NETWORK #
+networks:
+
+  42net:
+    name: ${USER}${DOMAIN_SUFFIX}
+    driver: bridge
+
+# VOLUMES #
+volumes:
+
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      device: /home/${USER}/data/${USER}${DOMAIN_SUFFIX}/mariadb
+      o: bind
+      type: none
+
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      device: /home/${USER}/data/${USER}${DOMAIN_SUFFIX}/wordpress
+      o: bind
+      type: none
+
+# SERVICES #
 services:
 
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb/.
+    volumes:
+      - mariadb:/var/lib/mysql/.
+    env_file:
+      - .env
+    networks:
+      - 42net
+    expose:
+      - "3306"
+    restart: always
+
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress/.
+    volumes:
+      - wordpress:/var/www/html
+    env_file:
+      - .env
+    networks:
+      - 42net
+    expose:
+      - "9000"
+    depends_on:
+      - mariadb
+    restart: always
+
   nginx:
-    build: ./nginx/
-
-
+    container_name: nginx
+    build: ./requirements/nginx/.
+    volumes:
+      - wordpress:/var/www/html
+    env_file:
+      - .env
+    networks:
+      - 42net
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    restart: always

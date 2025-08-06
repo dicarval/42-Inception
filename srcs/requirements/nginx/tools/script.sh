@@ -1,5 +1,5 @@
 #!/bin/sh
-DOMAIN="dicarval.42.fr"
+DOMAIN="$USER$DOMAIN_SUFFIX"
 
 if [ -f /nginx_server.conf ]; then
 

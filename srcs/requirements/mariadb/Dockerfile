@@ -1,7 +1,7 @@
 FROM alpine:3.21
 
 RUN apk update && \
-	apk add mariadb-server
+	apk add mariadb mariadb-client
 
 COPY ./tools/script.sh /
 
