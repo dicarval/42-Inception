@@ -5,11 +5,12 @@ all : up
 up:
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
+	unzip secrets.zip
 	docker-compose -f ./srcs/docker-compose.yml up
 
 down :
 	docker-compose -f ./srcs/docker-compose.yml down --rmi all -v
-	sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)
+	sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX) ./secrets
 
 recreate : down up
 
