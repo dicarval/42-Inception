@@ -5,7 +5,7 @@ all : up
 up:
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
-	docker-compose  -f ./srcs/docker-compose.yml up
+	docker-compose -f ./srcs/docker-compose.yml up
 
 down :
 	docker-compose -f ./srcs/docker-compose.yml down --rmi all -v

@@ -1,5 +1,7 @@
 #!/bin/sh
 DOMAIN="$USER$DOMAIN_SUFFIX"
+DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
+DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
 
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
