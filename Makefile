@@ -6,19 +6,19 @@ up:
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
 	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
 	unzip secrets.zip
-	docker-compose -f ./srcs/docker-compose.yml up
+	docker compose -f ./srcs/docker-compose.yml up
 
 down :
-	docker-compose -f ./srcs/docker-compose.yml down --rmi all -v
+	docker compose -f ./srcs/docker-compose.yml down --rmi all -v
 	sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX) ./secrets
 
 recreate : down up
 
 stop :
-	docker-compose -f ./srcs/docker-compose.yml stop
+	docker compose -f ./srcs/docker-compose.yml stop
 
 start :
-	docker-compose -f ./srcs/docker-compose.yml start
+	docker compose -f ./srcs/docker-compose.yml start
 
 status :
 	docker ps
