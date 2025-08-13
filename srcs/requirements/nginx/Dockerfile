@@ -4,12 +4,9 @@ RUN apk update && \
 	apk add nginx openssl
 
 RUN mkdir -p /var/www/html && chmod 755 /var/www/html
-RUN chown -R www-data:www-data /var/www/html
 
 COPY ./conf/nginx_server.conf /
 COPY ./tools/script.sh /
-
-RUN chmod -R +x /script.sh
 
 EXPOSE 443
 
