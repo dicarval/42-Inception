@@ -1,8 +1,11 @@
 #!/bin/sh
 DOMAIN="$USER$DOMAIN_SUFFIX"
+DB_NAME="${USER}_42"
 DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password.txt)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password.txt)
+
+
 
 if [ ! -d /run/php ]; then
   # Creating configuration directory #
@@ -27,7 +30,7 @@ if [ ! -d /run/php ]; then
   echo "Downloading and Configuring Wordpress..."
   wp core download --allow-root --quiet
   wp config create --allow-root \
-  --dbname=$DOMAIN \
+  --dbname=$DB_NAME \
   --dbuser=$USER \
   --dbpass=$DB_ROOT_PASSWORD \
   --dbhost=mariadb:3306 > /dev/null 2>&1
