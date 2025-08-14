@@ -32,7 +32,7 @@ if [ ! -d /run/php ]; then
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
-  --dbpass=$DB_ROOT_PASSWORD \
+  --dbpass=$DB_USER_PASSWORD \
   --dbhost=mariadb:3306 > /dev/null
 
   # Installing Wordpress #
