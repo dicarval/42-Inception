@@ -10,9 +10,11 @@ echo "Configuring MariaDB ..."
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 
+	# ensure proper ownership
+	chown -R mysql:mysql /var/lib/mysql 2>/dev/null || true
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql&
+	mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
 	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
@@ -27,8 +29,10 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb -e "GRANT ALL PRIVILEGES ON \`$DOMAIN\`.* TO '$USER'@'%' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
 	mariadb -e "FLUSH PRIVILEGES ;"
 
+	sleep 2
+
 	# Graceful shutdown
-	mariadb-admin shutdown
+	mariadb-admin stop
 	wait $MYSQL_PID
 fi
 
