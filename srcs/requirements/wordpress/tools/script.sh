@@ -23,7 +23,7 @@ if [ ! -d /run/php ]; then
   # Waiting for MariaDB configuration #
   while ! nc -z mariadb 3306 ; do
     echo "Waiting for MariaDB connection..."
-    sleep 5
+    sleep 1
   done
 
 # Downloading and Configuring Wordpress #
