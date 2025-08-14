@@ -35,6 +35,4 @@ fi
 echo "MariaDB is ready!"
 
 # Start as main container process
-exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 > /dev/null
-
-echo "MariaDB-safe was executed!"
+exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
