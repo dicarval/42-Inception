@@ -17,8 +17,8 @@ if [ -f /nginx_server.conf ]; then
   mv nginx_server.conf /etc/nginx/$DOMAIN.conf
 
     # Remove default site to avoid the default_server on port 80
-  if [ -f /etc/nginx/conf.d/default.conf ]; then
-    rm -f /etc/nginx/default.conf
+  if [ -f /etc/nginx/nginx.conf ]; then
+    rm -f /etc/nginx/nginx.conf
   fi
 
 fi
