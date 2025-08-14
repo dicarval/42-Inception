@@ -32,8 +32,8 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	sleep 2
 
 	# Graceful shutdown
-	mariadb-admin stop
 	wait $MYSQL_PID
+	mariadb-admin shutdown
 fi
 
 echo "MariaDB is ready!"
