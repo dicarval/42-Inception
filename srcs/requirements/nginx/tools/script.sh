@@ -13,7 +13,7 @@ if [ -f /nginx_server.conf ]; then
   # Configuring nginx #
   echo "Configuring Nginx ..."
   sed -i "s/domain/$DOMAIN/g" nginx_server.conf
-  mv nginx_server.conf /etc/nginx/$DOMAIN.conf
+  mv nginx_server.conf /etc/nginx/conf.d/$DOMAIN.conf
   mkdir -p /run/nginx
 
 fi
