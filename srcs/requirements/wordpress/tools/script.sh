@@ -56,4 +56,14 @@ if [ ! -d /run/php ]; then
 fi
 
 echo "Wordpress is ready!"
-php-fpm -FR
+
+if command -v php-fpm >/dev/null 2>&1; then
+  exec php-fpm -F
+elif command -v php-fpm8 >/dev/null 2>&1; then
+  exec php-fpm8 -F
+elif command -v php-fpm83 >/dev/null 2>&1; then
+  exec php-fpm83 -F
+else
+  echo "ERROR: php-fpm binary not found" >&2
+  exit 1
+fi
