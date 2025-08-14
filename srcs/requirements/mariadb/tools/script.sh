@@ -3,17 +3,17 @@ DOMAIN="$USER$DOMAIN_SUFFIX"
 DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
 DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
 
-DB_NAME="$USER""_wordpress"
+DB_NAME="${USER}_wordpress"
 
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
 
 # Initialize MariaDB data directory if it doesn't exist
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
+	mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 &
+	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0 &
 	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
@@ -25,11 +25,10 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	# Configure database and user
 	mariadb -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` ;"
 	mariadb -e "CREATE USER IF NOT EXISTS '$USER'@'%' IDENTIFIED BY '$DB_USER_PASSWORD' ;"
-	mariadb -e "GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$USER'@'%' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
+	mariadb -e "GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$USER'@'%';"
 	mariadb -e "FLUSH PRIVILEGES ;"
 
 	# Graceful shutdown
-	sleep 3;
 	mariadb-admin shutdown
 	wait $MYSQL_PID
 fi
@@ -37,4 +36,4 @@ fi
 echo "MariaDB is ready!"
 
 # Start as main container process
-exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
+exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0

@@ -7,7 +7,6 @@ WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password.txt)
 if [ ! -d /run/php ]; then
   # Creating configuration directory #
   mkdir -p /var/www/html && cd /var/www/html
-  chown -R www-data:www-data /var/www/html > /dev/null 2>&1
 
   # Removing possible previous content #
   rm -rf *
