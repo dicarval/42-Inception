@@ -33,7 +33,7 @@ if [ ! -d /run/php ]; then
   --dbname=$DB_NAME \
   --dbuser=$USER \
   --dbpass=$DB_ROOT_PASSWORD \
-  --dbhost=mariadb:3306 > /dev/null 2>&1
+  --dbhost=mariadb:3306 > /dev/null
 
   # Installing Wordpress #
   echo "Installing Wordpress..."
@@ -43,12 +43,12 @@ if [ ! -d /run/php ]; then
   --title="$WP_TITLE" \
   --admin_user="$WP_ADMIN_USER" \
   --admin_password="$WP_ADMIN_PASSWORD" \
-  --admin_email="$WP_ADMIN_EMAIL" > /dev/null 2>&1
+  --admin_email="$WP_ADMIN_EMAIL" > /dev/null
 
   # Creating an user #
   echo "Creating user..."
   wp user create --role=author --allow-root \
-  --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL > /dev/null 2>&1
+  --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL > /dev/null
 
   # Initializing PHP FastCGI Process Manager #
   echo "Initializing PHP-FPM..."
