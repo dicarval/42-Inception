@@ -27,6 +27,9 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb -e "FLUSH PRIVILEGES ;"
 
 	# Graceful shutdown
+
+	sleep 3;
+
 	mariadb-admin shutdown
 	wait $MYSQL_PID
 fi
