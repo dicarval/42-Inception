@@ -5,6 +5,7 @@ RUN apk add php php-fpm php-mysqli php-mysqlnd php-phar php-iconv php-mbstring c
 
 COPY ./tools/script.sh /
 COPY ./conf/php.conf /etc/php/php-fpm.d/www.conf
+COPY ./conf/php.ini /etc/php/php.ini
 
 EXPOSE 9000
 
