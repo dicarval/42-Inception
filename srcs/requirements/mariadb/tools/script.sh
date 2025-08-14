@@ -11,7 +11,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 
 	# Start MariaDB temporarily for configuration
-	#mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
+	mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
 	#MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
