@@ -12,7 +12,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --skip-networking &
+	mariadbd-safe --user=mysql --datadir=/var/lib/mysql&
 	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
