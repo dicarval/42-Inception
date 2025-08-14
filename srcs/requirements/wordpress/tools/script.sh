@@ -28,11 +28,11 @@ if [ ! -d /run/php ]; then
 
 # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
-  wp core download --allow-root --quiet
+  wp core download --allow-root
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
-  --dbpass=$DB_USER_PASSWORD \
+  --dbpass=$DB_ROOT_PASSWORD \
   --dbhost=mariadb:3306 > /dev/null
 
   # Installing Wordpress #
