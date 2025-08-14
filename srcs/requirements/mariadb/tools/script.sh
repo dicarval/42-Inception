@@ -11,14 +11,14 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
-	MYSQL_PID=$!
+	#mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
+	#MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
-	until mariadb-admin ping >/dev/null 2>&1; do
-		echo "Waiting for MariaDB to start..."
-		sleep 1
-	done
+	#until mariadb-admin ping >/dev/null 2>&1; do
+	#	echo "Waiting for MariaDB to start..."
+	#	sleep 1
+	#done
 
 	# Configure database and user
 	mariadb -e "CREATE DATABASE IF NOT EXISTS \`$DOMAIN\` ;"
@@ -31,7 +31,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	sleep 3;
 
 	mariadb-admin shutdown
-	wait $MYSQL_PID
+	#wait $MYSQL_PID
 fi
 
 echo "MariaDB is ready!"
