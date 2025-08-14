@@ -56,4 +56,4 @@ if [ ! -d /run/php ]; then
 fi
 
 echo "Wordpress is ready!"
-php-fpm83 -FR
+php-fpm -FR
