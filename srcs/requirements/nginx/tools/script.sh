@@ -16,6 +16,11 @@ if [ -f /nginx_server.conf ]; then
   mkdir -p /run/nginx /etc/nginx/conf.d
   mv nginx_server.conf /etc/nginx/conf.d/$DOMAIN.conf
 
+    # Remove default site to avoid the default_server on port 80
+  if [ -f /etc/nginx/conf.d/default.conf ]; then
+    rm -f /etc/nginx/conf.d/default.conf
+  fi
+
 fi
 
 echo "Nginx is ready!"
