@@ -6,18 +6,13 @@ DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
 
-echo $DB_ROOT_PASSWORD
-
 # Initialize MariaDB data directory if it doesn't exist
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 
-	# ensure proper ownership
-	chown -R mysql:mysql /var/lib/mysql 2>/dev/null || true
-
 	# Start MariaDB temporarily for configuration
 	mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
-	#MYSQL_PID=$!
+	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
 	until mariadb-admin ping >/dev/null 2>&1; do
@@ -28,7 +23,9 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	# Configure database and user
 	mariadb -e "CREATE DATABASE IF NOT EXISTS \`$DOMAIN\` ;"
 	mariadb -e "CREATE USER IF NOT EXISTS '$USER'@'%' IDENTIFIED BY '$DB_USER_PASSWORD' ;"
-	mariadb -e "GRANT ALL PRIVILEGES ON \`$DOMAIN\`.* TO '$USER'@'%' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
+	mariadb -e "GRANT ALL PRIVILEGES ON \`$DOMAIN\`.* TO '$USER'@'%' ;"
+	mariadb -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}' ;"
+	mariadb -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT_PASSWORD}') ;"
 	mariadb -e "FLUSH PRIVILEGES ;"
 
 	# Graceful shutdown
