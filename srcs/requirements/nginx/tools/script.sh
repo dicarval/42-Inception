@@ -13,12 +13,12 @@ if [ -f /nginx_server.conf ]; then
   # Configuring nginx #
   echo "Configuring Nginx ..."
   sed -i "s/domain/$DOMAIN/g" nginx_server.conf
-  mkdir -p /run/nginx /etc/nginx/conf.d
-  mv nginx_server.conf /etc/nginx/conf.d/$DOMAIN.conf
+  mkdir -p /run/nginx
+  mv nginx_server.conf /etc/nginx/$DOMAIN.conf
 
     # Remove default site to avoid the default_server on port 80
   if [ -f /etc/nginx/conf.d/default.conf ]; then
-    rm -f /etc/nginx/conf.d/default.conf
+    rm -f /etc/nginx/default.conf
   fi
 
 fi
