@@ -28,7 +28,7 @@ if [ ! -d /run/php ]; then
 
 # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
-  wp core download --allow-root
+  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
