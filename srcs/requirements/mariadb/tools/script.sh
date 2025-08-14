@@ -6,6 +6,8 @@ DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
 
+echo $DB_ROOT_PASSWORD
+
 # Initialize MariaDB data directory if it doesn't exist
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql
@@ -29,11 +31,9 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb -e "GRANT ALL PRIVILEGES ON \`$DOMAIN\`.* TO '$USER'@'%' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
 	mariadb -e "FLUSH PRIVILEGES ;"
 
-	sleep 2
-
 	# Graceful shutdown
 	mariadb-admin shutdown
-	#wait $MYSQL_PID
+	wait $MYSQL_PID
 fi
 
 echo "MariaDB is ready!"
