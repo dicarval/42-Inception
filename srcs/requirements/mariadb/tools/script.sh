@@ -15,7 +15,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
 	# Start MariaDB temporarily for configuration
 	mariadbd-safe --user=mysql --datadir=/var/lib/mysql &
-	MYSQL_PID=$!
+	#MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
 	until mariadb-admin ping >/dev/null 2>&1; do
@@ -32,8 +32,8 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	sleep 2
 
 	# Graceful shutdown
-	wait $MYSQL_PID
 	mariadb-admin shutdown
+	#wait $MYSQL_PID
 fi
 
 echo "MariaDB is ready!"
