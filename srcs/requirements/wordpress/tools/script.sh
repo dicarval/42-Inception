@@ -57,4 +57,4 @@ fi
 
 echo "Wordpress is ready!"
 
-exec php-fpm -F
+exec php-fpm8 -F
