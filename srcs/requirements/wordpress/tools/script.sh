@@ -50,6 +50,9 @@ if [ ! -d /run/php ]; then
   wp user create --role=author --allow-root \
   --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL
 
+  # Making Wordpress listen to 9000 #
+  sed -i "s#listen = /run/php/php8.3-fpm.sock#listen = 9000#" /etc/php/php-fpm.d/www.conf
+
   # Initializing PHP FastCGI Process Manager #
   echo "Initializing PHP-FPM..."
   mkdir /run/php

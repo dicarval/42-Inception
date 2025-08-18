@@ -4,7 +4,6 @@ RUN apk update
 RUN apk add php php-fpm php-mysqli php-mysqlnd php-phar php-iconv php-mbstring curl netcat-openbsd
 
 COPY ./tools/script.sh /
-COPY ./conf/php.conf /etc/php/php-fpm.d/www.conf
 
 EXPOSE 9000
 
