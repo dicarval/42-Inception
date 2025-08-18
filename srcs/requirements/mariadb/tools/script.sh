@@ -17,7 +17,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
-	until mariadb-admin ping >/dev/null 2>&1; do
+	until mariadb-admin ping > /dev/null 2>&1; do
 		echo "Waiting for MariaDB to start..."
 		sleep 1
 	done

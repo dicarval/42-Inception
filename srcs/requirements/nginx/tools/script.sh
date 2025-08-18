@@ -8,7 +8,7 @@ if [ -f /nginx_server.conf ]; then
   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/$DOMAIN.key \
   -out /etc/ssl/certs/$DOMAIN.crt \
-  -subj "/C=PT/L=Lisbon/O=42Lisboa/OU=student/CN=$DOMAIN/UID=$USER"
+  -subj "/C=PT/L=Lisbon/O=42Lisboa/OU=student/CN=$DOMAIN/UID=$USER" > /dev/null 2>&1
 
   # Configuring nginx #
   echo "Configuring Nginx ..."
