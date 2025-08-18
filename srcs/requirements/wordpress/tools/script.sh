@@ -57,10 +57,4 @@ fi
 
 echo "Wordpress is ready!"
 
-if command -v php-fpm >/dev/null 2>&1; then
-  exec php-fpm -F
-elif command -v php-fpm8 >/dev/null 2>&1; then
-  exec php-fpm8 -F
-elif command -v php-fpm83 >/dev/null 2>&1; then
-  exec php-fpm83 -F
-fi
+exec php-fpm -F
