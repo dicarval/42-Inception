@@ -51,7 +51,7 @@ if [ ! -d /run/php ]; then
   --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL
 
   # Making Wordpress listen to 9000 #
-  sed -i "s#listen = /run/php/php8.3-fpm.sock#listen = 9000#" /etc/php/php-fpm.d/www.conf
+  sed -i "s#listen = 127.0.0.1:9000#listen = 0.0.0.0:9000#" /etc/php83/php-fpm.d/www.conf
 
   # Initializing PHP FastCGI Process Manager #
   echo "Initializing PHP-FPM..."
