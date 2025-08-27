@@ -5,8 +5,6 @@ DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password.txt)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password.txt)
 
-
-
 if [ ! -d /run/php ]; then
   # Creating configuration directory #
   mkdir -p /var/www/html && cd /var/www/html
@@ -21,19 +19,19 @@ if [ ! -d /run/php ]; then
   mv wp-cli.phar /usr/local/bin/wp
 
   # Waiting for MariaDB configuration #
-  while ! nc -z mariadb 3306 ; do
+  while ! nc -z mariadb 3306 > /dev/null 2>&1; do
     echo "Waiting for MariaDB connection..."
     sleep 1
   done
 
 # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
-  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root
+  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root  > /dev/null 2>&1
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
   --dbpass=$DB_ROOT_PASSWORD \
-  --dbhost=mariadb:3306
+  --dbhost=mariadb:3306  > /dev/null 2>&1
 
   # Installing Wordpress #
   echo "Installing Wordpress..."
@@ -43,12 +41,12 @@ if [ ! -d /run/php ]; then
   --title="$WP_TITLE" \
   --admin_user="$WP_ADMIN_USER" \
   --admin_password="$WP_ADMIN_PASSWORD" \
-  --admin_email="$WP_ADMIN_EMAIL"
+  --admin_email="$WP_ADMIN_EMAIL"  > /dev/null 2>&1
 
   # Creating an user #
   echo "Creating user..."
   wp user create --role=author --allow-root \
-  --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL
+  --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL > /dev/null 2>&1
 
   # Making Wordpress listen to 9000 #
   sed -i "s#listen = 127.0.0.1:9000#listen = 0.0.0.0:9000#" /etc/php83/php-fpm.d/www.conf

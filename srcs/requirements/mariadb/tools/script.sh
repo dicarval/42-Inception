@@ -4,7 +4,6 @@ DB_NAME="${USER}_42"
 DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
 DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
 
-
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
 
@@ -13,7 +12,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0 &
+	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking &
 	MYSQL_PID=$!
 
 	# Wait for MariaDB to be ready
@@ -36,4 +35,4 @@ fi
 echo "MariaDB is ready!"
 
 # Start as main container process
-exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0
+exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0 > /dev/null

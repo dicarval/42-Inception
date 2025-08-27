@@ -2,23 +2,30 @@ include ./srcs/.env
 
 all : up
 
-up:
-	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
-	mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
-	unzip secrets.zip
-	docker compose -f ./srcs/docker-compose.yml up
+up :
+	@echo "Creating volume directories"
+	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
+	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
+	@unzip secrets.zip
+	@echo "Building the containers"
+	@docker compose -f ./srcs/docker-compose.yml up
 
 down :
-	docker compose -f ./srcs/docker-compose.yml down --rmi all -v
-	sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX) ./secrets
+	@echo "Removing Inception containers"
+	@docker compose -f ./srcs/docker-compose.yml down --rmi all -v
+	@echo "Deleting directories"
+	@sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX) ./secrets
+	@echo "All clean"
 
 recreate : down up
 
 stop :
-	docker compose -f ./srcs/docker-compose.yml stop
+	@echo "Stoping Inception containers"
+	@docker compose -f ./srcs/docker-compose.yml stop
 
 start :
-	docker compose -f ./srcs/docker-compose.yml start
+	@echo "Starting Inception containers"
+	@docker compose -f ./srcs/docker-compose.yml start
 
 status :
-	docker ps
+	@docker ps
