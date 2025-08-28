@@ -1,8 +1,8 @@
 #!/bin/sh
 DOMAIN="$USER$DOMAIN_SUFFIX"
 DB_NAME="${USER}_42"
-DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
-DB_USER_PASSWORD=$(cat /run/secrets/db_user_password.txt)
+DB_ROOT_PASSWORD=$(cat ${ROOT_PASSWORD_FILE:-/run/secrets/db_root_password})
+DB_USER_PASSWORD=$(cat ${USER_PASSWORD_FILE:-/run/secrets/db_user_password})
 
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."

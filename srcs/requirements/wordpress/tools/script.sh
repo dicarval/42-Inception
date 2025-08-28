@@ -1,9 +1,9 @@
 #!/bin/sh
 DOMAIN="https://$USER$DOMAIN_SUFFIX"
 DB_NAME="${USER}_42"
-DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password.txt)
-WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password.txt)
-WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password.txt)
+DB_ROOT_PASSWORD=$(cat ${DB_PASSWORD_FILE:-/run/secrets/db_root_password})
+WP_ADMIN_PASSWORD=$(cat ${ADMIN_PASSWORD_FILE:-/run/secrets/wp_admin_password})
+WP_USER_PASSWORD=$(cat ${USER_PASSWORD_FILE:-/run/secrets/wp_user_password})
 
 if [ ! -d /run/php ]; then
   # Creating configuration directory #
