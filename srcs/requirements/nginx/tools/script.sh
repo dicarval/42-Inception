@@ -19,4 +19,4 @@ if [ -f /nginx_server.conf ]; then
 fi
 
 echo "Nginx is ready!"
-nginx -g "daemon off;"
+exec nginx -g "daemon off;"

@@ -9,16 +9,18 @@ echo "Configuring MariaDB ..."
 
 # Initialize MariaDB data directory if it doesn't exist
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-	mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
+	mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1
 
 	# Start MariaDB temporarily for configuration
-	mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking &
-	MYSQL_PID=$!
+	mariadbd-safe --user=mysql \
+	  --datadir=/var/lib/mysql \
+	  --bind-address=0.0.0.0 \
+	  --skip-networking &
 
 	# Wait for MariaDB to be ready
 	until mariadb-admin ping > /dev/null 2>&1; do
 		echo "Waiting for MariaDB to start..."
-		sleep 1
+		sleep 2
 	done
 
 	# Configure database and user
@@ -29,10 +31,12 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
 	# Graceful shutdown
 	mariadb-admin shutdown
-	wait $MYSQL_PID
 fi
 
 echo "MariaDB is ready!"
 
 # Start as main container process
-exec mariadbd-safe --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --skip-networking=0 > /dev/null
+exec mariadbd --user=mysql \
+  --datadir=/var/lib/mysql \
+  --bind-address=0.0.0.0 \
+  --skip-networking=0 > /dev/null 2>&1

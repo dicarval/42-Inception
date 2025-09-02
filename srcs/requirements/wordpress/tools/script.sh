@@ -21,10 +21,10 @@ if [ ! -d /run/php ]; then
   # Waiting for MariaDB configuration #
   while ! nc -z mariadb 3306 > /dev/null 2>&1; do
     echo "Waiting for MariaDB connection..."
-    sleep 1
+    sleep 2
   done
 
-# Downloading and Configuring Wordpress #
+  # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
   php -d memory_limit=512M /usr/local/bin/wp core download --allow-root  > /dev/null 2>&1
   wp config create --allow-root \
@@ -50,6 +50,9 @@ if [ ! -d /run/php ]; then
 
   # Making Wordpress listen to 9000 #
   sed -i "s#listen = 127.0.0.1:9000#listen = 0.0.0.0:9000#" /etc/php83/php-fpm.d/www.conf
+
+  echo "Installing theme..."
+  wp theme install feature --activate --allow-root > /dev/null 2>&1
 
   # Initializing PHP FastCGI Process Manager #
   echo "Initializing PHP-FPM..."
