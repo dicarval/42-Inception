@@ -6,7 +6,6 @@ up :
 	@echo "Creating volume directories"
 	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
 	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
-	@unzip secrets.zip
 	@echo "Building the containers"
 	@docker compose -f ./srcs/docker-compose.yml up
 
@@ -14,7 +13,7 @@ down :
 	@echo "Removing Inception containers"
 	@docker compose -f ./srcs/docker-compose.yml down --rmi all -v
 	@echo "Deleting directories"
-	@sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX) ./secrets
+	@sudo rm -rf /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)
 	@echo "All clean"
 
 recreate : down up

@@ -15,7 +15,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	mariadbd-safe --user=mysql \
 	  --datadir=/var/lib/mysql \
 	  --bind-address=0.0.0.0 \
-	  --skip-networking &
+	  --skip-networking > /dev/null 2>&1 &
 
 	# Wait for MariaDB to be ready
 	until mariadb-admin ping > /dev/null 2>&1; do

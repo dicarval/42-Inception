@@ -70,13 +70,13 @@ services:
 secrets:
 
   db_root_password:
-    file: ../secrets/.db_root_password
+    file: /home/${USER}/data/secrets/.db_root_password
   db_user_password:
-    file: ../secrets/.db_user_password
+    file: /home/${USER}/data/secrets/.db_user_password
   wp_admin_password:
-    file: ../secrets/.wp_admin_password
+    file: /home/${USER}/data/secrets/.wp_admin_password
   wp_user_password:
-    file: ../secrets/.wp_user_password
+    file: /home/${USER}/data/secrets/.wp_user_password
 
 # VOLUMES #
 volumes:
