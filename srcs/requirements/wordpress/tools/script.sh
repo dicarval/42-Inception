@@ -31,7 +31,7 @@ if [ ! -d /run/php ]; then
   --dbname=$DB_NAME \
   --dbuser=$USER \
   --dbpass=$DB_ROOT_PASSWORD \
-  --dbhost=mariadb:3306  > /dev/null 2>&1
+  --dbhost=mariadb:3306 > /dev/null 2>&1
 
   # Installing Wordpress #
   echo "Installing Wordpress..."
@@ -41,7 +41,14 @@ if [ ! -d /run/php ]; then
   --title="$WP_TITLE" \
   --admin_user="$WP_ADMIN_USER" \
   --admin_password="$WP_ADMIN_PASSWORD" \
-  --admin_email="$WP_ADMIN_EMAIL"  > /dev/null 2>&1
+  --admin_email="$WP_ADMIN_EMAIL" > /dev/null 2>&1
+
+  # Installing Redis Cache plugin #
+  echo "Installing Redis Cache plugin..."
+  echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
+  echo "define('WP_REDIS_PORT', 6379);" >>  wp-config.php
+  wp plugin install redis-cache --activate --allow-root > /dev/null 2>&1
+  wp redis enable --allow-root > /dev/null 2>&1
 
   # Creating an user #
   echo "Creating user..."

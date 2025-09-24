@@ -6,6 +6,7 @@ up :
 	@echo "Creating volume directories"
 	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/mariadb
 	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/wordpress
+	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/redis
 	@echo "Building the containers"
 	@docker compose -f ./srcs/docker-compose.yml up
 

@@ -49,6 +49,7 @@ services:
       - "9000"
     depends_on:
       - mariadb
+      - redis
     restart: always
 
   nginx:
@@ -66,6 +67,40 @@ services:
       - wordpress
     restart: always
 
+  redis:
+    container_name: redis
+    build: ./requirements/bonus/redis/.
+    volumes:
+      - redis:/data
+    env_file:
+      - .env
+    networks:
+      - inception
+    expose:
+      - "6379"
+    restart: always
+    logging:
+      driver: "none"
+
+  ftp:
+    container_name: ftp
+    build: ./requirements/bonus/ftp/.
+    volumes:
+      - wordpress:/home/${USER}/wordpress
+    env_file:
+      - .env
+    environment:
+      - FTP_PASSWORD=/run/secrets/ftp_password
+    secrets:
+      - ftp_password
+    networks:
+      - inception
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    restart: always
+
+
 # SECRETS #
 secrets:
 
@@ -77,6 +112,8 @@ secrets:
     file: /home/${USER}/data/secrets/.wp_admin_password
   wp_user_password:
     file: /home/${USER}/data/secrets/.wp_user_password
+  ftp_password:
+    file: /home/${USER}/data/secrets/.ftp_password
 
 # VOLUMES #
 volumes:
@@ -94,5 +131,13 @@ volumes:
     driver: local
     driver_opts:
       device: /home/${USER}/data/${USER}${DOMAIN_SUFFIX}/wordpress
+      o: bind
+      type: none
+
+  redis:
+    name: redis
+    driver: local
+    driver_opts:
+      device: /home/${USER}/data/${USER}${DOMAIN_SUFFIX}/redis
       o: bind
       type: none
