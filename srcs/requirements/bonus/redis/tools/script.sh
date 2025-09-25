@@ -2,4 +2,4 @@
 
 echo "Starting Redis..."
 
-exec redis-server --protected-mode no > /dev/null 2>&1
+exec redis-server --protected-mode no --bind 0.0.0.0

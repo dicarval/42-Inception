@@ -19,19 +19,32 @@ chmod g-s /home/$USER/wordpress
 echo "Configuring the server"
 cat <<EOF > /etc/vsftpd/vsftpd.conf
 listen=YES
-#anonymous_enable=NO
+listen_ipv6=NO
+anonymous_enable=NO
 local_enable=YES
 write_enable=YES
-#local_umask=022
-#chroot_local_user=YES
-#allow_writeable_chroot=YES
-#pasv_enable=YES
-#pasv_min_port=21100
-#pasv_max_port=21110
+local_umask=022
+chroot_local_user=YES
+allow_writeable_chroot=YES
+pasv_enable=YES
+pasv_min_port=21100
+pasv_max_port=21110
+
+# Debug/logging to /var/log/vsftpd.log
+xferlog_enable=YES
+xferlog_file=/var/log/vsftpd.log
+vsftpd_log_file=/var/log/vsftpd.log
+log_ftp_protocol=YES
+dual_log_enable=YES
+
+# Disable seccomp sandbox (fixes "child died" in some Alpine/container setups)
+seccomp_sandbox=NO
 EOF
 
 echo "Starting vsftpd..."
-ls -ld /home/$USER
-ls -ld /home/$USER/wordpress
-ls -l /home/$USER
-exec vsftpd /etc/vsftpd/vsftpd.conf -olisten=NO -obackground=NO
+mkdir -p /var/run/vsftpd/empty
+chmod 755 /var/run/vsftpd/empty
+touch /var/log/vsftpd.log
+chown root:root /var/log/vsftpd.log
+
+exec vsftpd /etc/vsftpd/vsftpd.conf

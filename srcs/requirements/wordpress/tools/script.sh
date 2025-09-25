@@ -24,9 +24,11 @@ if [ ! -d /run/php ]; then
     sleep 2
   done
 
+
+
   # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
-  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root  > /dev/null 2>&1
+  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root > /dev/null 2>&1
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
@@ -43,12 +45,30 @@ if [ ! -d /run/php ]; then
   --admin_password="$WP_ADMIN_PASSWORD" \
   --admin_email="$WP_ADMIN_EMAIL" > /dev/null 2>&1
 
-  # Installing Redis Cache plugin #
-  echo "Installing Redis Cache plugin..."
-  echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
-  echo "define('WP_REDIS_PORT', 6379);" >>  wp-config.php
-  wp plugin install redis-cache --activate --allow-root > /dev/null 2>&1
-  wp redis enable --allow-root > /dev/null 2>&1
+#  # Installing Redis Cache plugin #
+#  echo "Installing Redis Cache plugin..."
+#  echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
+#  echo "define('WP_REDIS_PORT', 6379);" >>  wp-config.php
+#  wp plugin install redis-cache --activate --allow-root
+#  while ! nc -z redis 6379 > /dev/null 2>&1; do
+#    echo "Waiting for Redis connection..."
+#    sleep 1
+#  done
+#  wp redis enable --allow-root
+#
+  # Ensure Redis constants are set in the correct place
+  WP_PATH="/var/www/html"
+  wp config set WP_REDIS_CLIENT phpredis --allow-root --path="$WP_PATH"
+  wp config set WP_REDIS_HOST redis --allow-root --path="$WP_PATH"
+  wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_PATH"
+  # Install plugin but don't activate until Redis is reachable
+  wp plugin install redis-cache --allow-root --path="$WP_PATH"
+  while ! nc -z redis 6379 > /dev/null 2>&1; do
+    echo "Waiting for Redis connection..."
+    sleep 1
+  done
+  wp plugin activate redis-cache --allow-root --path="$WP_PATH"
+  wp redis enable --allow-root --path="$WP_PATH"
 
   # Creating an user #
   echo "Creating user..."

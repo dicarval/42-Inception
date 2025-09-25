@@ -82,23 +82,23 @@ services:
     logging:
       driver: "none"
 
-  ftp:
-    container_name: ftp
-    build: ./requirements/bonus/ftp/.
-    volumes:
-      - wordpress:/home/${USER}/wordpress
-    env_file:
-      - .env
-    environment:
-      - FTP_PASSWORD=/run/secrets/ftp_password
-    secrets:
-      - ftp_password
-    networks:
-      - inception
-    ports:
-      - "21:21"
-      - "21100-21110:21100-21110"
-    restart: always
+#  ftp:
+#    container_name: ftp
+#    build: ./requirements/bonus/ftp/.
+#    volumes:
+#      - wordpress:/home/${USER}/wordpress
+#    env_file:
+#      - .env
+#    environment:
+#      - FTP_PASSWORD=/run/secrets/ftp_password
+#    secrets:
+#      - ftp_password
+#    networks:
+#      - inception
+#    ports:
+#      - "21:21"
+#      - "21100-21110:21100-21110"
+#    restart: always
 
 
 # SECRETS #
