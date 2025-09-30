@@ -1,16 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 DOMAIN="https://$USER$DOMAIN_SUFFIX"
 DB_NAME="${USER}_42"
 DB_ROOT_PASSWORD=$(cat ${DB_PASSWORD_FILE:-/run/secrets/db_root_password})
 WP_ADMIN_PASSWORD=$(cat ${ADMIN_PASSWORD_FILE:-/run/secrets/wp_admin_password})
 WP_USER_PASSWORD=$(cat ${USER_PASSWORD_FILE:-/run/secrets/wp_user_password})
 
-if [ ! -d /run/php ]; then
-  # Creating configuration directory #
-  mkdir -p /var/www/html && cd /var/www/html
+INIT_MARKER="/var/www/html/.initialized"
 
-  # Removing possible previous content #
-  rm -rf *
+if [ ! -f "$INIT_MARKER" ]; then
+  cd /var/www/html
 
   # Installing Wordpress Command Line Interface #
   echo "Installing Wordpress Command Line Interface (WP-CLI)..."
@@ -24,11 +22,9 @@ if [ ! -d /run/php ]; then
     sleep 2
   done
 
-
-
   # Downloading and Configuring Wordpress #
   echo "Downloading and Configuring Wordpress..."
-  php -d memory_limit=512M /usr/local/bin/wp core download --allow-root > /dev/null 2>&1
+  wp core download --allow-root > /dev/null 2>&1
   wp config create --allow-root \
   --dbname=$DB_NAME \
   --dbuser=$USER \
@@ -45,30 +41,20 @@ if [ ! -d /run/php ]; then
   --admin_password="$WP_ADMIN_PASSWORD" \
   --admin_email="$WP_ADMIN_EMAIL" > /dev/null 2>&1
 
-#  # Installing Redis Cache plugin #
-#  echo "Installing Redis Cache plugin..."
-#  echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
-#  echo "define('WP_REDIS_PORT', 6379);" >>  wp-config.php
-#  wp plugin install redis-cache --activate --allow-root
-#  while ! nc -z redis 6379 > /dev/null 2>&1; do
-#    echo "Waiting for Redis connection..."
-#    sleep 1
-#  done
-#  wp redis enable --allow-root
-#
   # Ensure Redis constants are set in the correct place
+  echo "Installing Redis..."
   WP_PATH="/var/www/html"
-  wp config set WP_REDIS_CLIENT phpredis --allow-root --path="$WP_PATH"
-  wp config set WP_REDIS_HOST redis --allow-root --path="$WP_PATH"
-  wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_PATH"
+  wp config set WP_REDIS_CLIENT phpredis --allow-root --path="$WP_PATH" > /dev/null 2>&1
+  wp config set WP_REDIS_HOST redis --allow-root --path="$WP_PATH" > /dev/null 2>&1
+  wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_PATH" > /dev/null 2>&1
   # Install plugin but don't activate until Redis is reachable
-  wp plugin install redis-cache --allow-root --path="$WP_PATH"
+  wp plugin install redis-cache --allow-root --path="$WP_PATH" > /dev/null 2>&1
   while ! nc -z redis 6379 > /dev/null 2>&1; do
     echo "Waiting for Redis connection..."
     sleep 1
   done
-  wp plugin activate redis-cache --allow-root --path="$WP_PATH"
-  wp redis enable --allow-root --path="$WP_PATH"
+  wp plugin activate redis-cache --allow-root --path="$WP_PATH" > /dev/null 2>&1
+  wp redis enable --allow-root --path="$WP_PATH" > /dev/null 2>&1
 
   # Creating an user #
   echo "Creating user..."
@@ -76,16 +62,16 @@ if [ ! -d /run/php ]; then
   --user_pass=$WP_USER_PASSWORD $USER $USER_EMAIL > /dev/null 2>&1
 
   # Making Wordpress listen to 9000 #
-  sed -i "s#listen = 127.0.0.1:9000#listen = 0.0.0.0:9000#" /etc/php83/php-fpm.d/www.conf
+  sed -i "s#^listen\s*=.*#listen = 0.0.0.0:9000#" /etc/php/8.2/fpm/pool.d/www.conf
 
   echo "Installing theme..."
   wp theme install feature --activate --allow-root > /dev/null 2>&1
 
   # Initializing PHP FastCGI Process Manager #
   echo "Initializing PHP-FPM..."
-  mkdir /run/php
+  touch "$INIT_MARKER"
 fi
 
 echo "Wordpress is ready!"
 
-exec php-fpm83 -F
+exec php-fpm8.2 -F

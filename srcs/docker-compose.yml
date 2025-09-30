@@ -65,6 +65,7 @@ services:
       - "443:443"
     depends_on:
       - wordpress
+      - parallax
     restart: always
 
   redis:
@@ -82,24 +83,45 @@ services:
     logging:
       driver: "none"
 
-#  ftp:
-#    container_name: ftp
-#    build: ./requirements/bonus/ftp/.
-#    volumes:
-#      - wordpress:/home/${USER}/wordpress
-#    env_file:
-#      - .env
-#    environment:
-#      - FTP_PASSWORD=/run/secrets/ftp_password
-#    secrets:
-#      - ftp_password
-#    networks:
-#      - inception
-#    ports:
-#      - "21:21"
-#      - "21100-21110:21100-21110"
-#    restart: always
+  ftp:
+    container_name: ftp
+    build: ./requirements/bonus/ftp/.
+    volumes:
+      - wordpress:/home/${USER}/wordpress
+    env_file:
+      - .env
+    environment:
+      - FTP_PASSWORD=/run/secrets/ftp_password
+    secrets:
+      - ftp_password
+    networks:
+      - inception
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    restart: always
 
+  parallax:
+    container_name: parallax
+    build: ./requirements/bonus/parallax/.
+    volumes:
+      - parallax:/usr/share/nginx/html:ro
+    env_file:
+      - .env
+    networks:
+      - inception
+    restart: always
+
+  adminer:
+    container_name: adminer
+    build: ./requirements/bonus/adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    restart: always
 
 # SECRETS #
 secrets:
@@ -139,5 +161,13 @@ volumes:
     driver: local
     driver_opts:
       device: /home/${USER}/data/${USER}${DOMAIN_SUFFIX}/redis
+      o: bind
+      type: none
+
+  parallax:
+    name: parallax
+    driver: local
+    driver_opts:
+      device: ./requirements/bonus/parallax/website
       o: bind
       type: none

@@ -1,9 +1,8 @@
-FROM alpine:3.21
+FROM debian:bookworm
 
-RUN apk update && apk add redis
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends redis
 
 COPY ./tools/script.sh /
-
-EXPOSE 6379
 
 ENTRYPOINT ["/script.sh"]

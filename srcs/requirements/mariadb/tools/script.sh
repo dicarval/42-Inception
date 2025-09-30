@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DOMAIN="$USER$DOMAIN_SUFFIX"
 DB_NAME="${USER}_42"
 DB_ROOT_PASSWORD=$(cat ${ROOT_PASSWORD_FILE:-/run/secrets/db_root_password})
@@ -6,9 +6,10 @@ DB_USER_PASSWORD=$(cat ${USER_PASSWORD_FILE:-/run/secrets/db_user_password})
 
 # Starting and configuring MariaDB #
 echo "Configuring MariaDB ..."
+INIT_MARKER="/var/lib/mysql/.initialized"
 
 # Initialize MariaDB data directory if it doesn't exist
-if [ ! -d "/var/lib/mysql/mysql" ]; then
+if [ ! -f "$INIT_MARKER" ]; then
 	mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null 2>&1
 
 	# Start MariaDB temporarily for configuration
@@ -31,6 +32,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
 	# Graceful shutdown
 	mariadb-admin shutdown
+	touch "$INIT_MARKER"
 fi
 
 echo "MariaDB is ready!"

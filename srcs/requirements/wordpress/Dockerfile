@@ -1,11 +1,9 @@
-FROM alpine:3.21
+FROM debian:bookworm
 
-RUN apk update
-RUN apk add php php-fpm php-mysqli php-mysqlnd php-phar php-iconv php-mbstring php-redis php-tokenizer php-xml
-RUN apk add curl netcat-openbsd
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends php8.2-fpm php8.2-mysql php8.2-redis
+RUN apt-get install -y --no-install-recommends curl ca-certificates netcat-openbsd
 
 COPY ./tools/script.sh /
-
-EXPOSE 9000
 
 ENTRYPOINT ["/script.sh"]

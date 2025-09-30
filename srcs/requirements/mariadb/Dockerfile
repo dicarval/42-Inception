@@ -1,7 +1,7 @@
-FROM alpine:3.21
+FROM debian:bookworm
 
-RUN apk update && \
-	apk add mariadb mariadb-client
+RUN apt-get update && apt-get upgrade -y
+RUN	apt-get install -y --no-install-recommends mariadb-server mariadb-client
 
 COPY ./tools/script.sh /
 

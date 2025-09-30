@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 DOMAIN="$USER$DOMAIN_SUFFIX"
 
 if [ -f /nginx_server.conf ]; then
@@ -8,13 +8,14 @@ if [ -f /nginx_server.conf ]; then
   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /etc/ssl/private/$DOMAIN.key \
   -out /etc/ssl/certs/$DOMAIN.crt \
-  -subj "/C=PT/L=Lisbon/O=42Lisboa/OU=student/CN=$DOMAIN/UID=$USER" > /dev/null 2>&1
+  -subj "/C=PT/L=Lisbon/O=42Lisboa/OU=student/CN=$DOMAIN/UID=$USER" > /dev/null 2>&1 \
+  -addext "subjectAltName = DNS:$DOMAIN, DNS:parallax.$DOMAIN" > /dev/null 2>&1
 
   # Configuring nginx #
   echo "Configuring Nginx ..."
   sed -i "s/domain/$DOMAIN/g" nginx_server.conf
   mkdir -p /run/nginx
-  mv nginx_server.conf /etc/nginx/http.d/default.conf
+  mv nginx_server.conf /etc/nginx/conf.d/$DOMAIN.conf
 
 fi
 

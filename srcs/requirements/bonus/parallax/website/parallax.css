@@ -1,0 +1,43 @@
+body, html
+{
+	height: 100%;
+	margin: 0;
+}
+
+.parallax
+{
+	height: 100%;
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: xx-large;
+	font-weight: bold;
+	color: white;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.small-ducks
+{
+	background-image: url("/small_ducks.jpg");
+}
+
+.big-ducks
+{
+	background-image: url("/big_ducks.jpg");
+}
+
+.black_screen
+{
+	font-size: xx-large;
+	background-color: black;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	height: 1000px;
+}

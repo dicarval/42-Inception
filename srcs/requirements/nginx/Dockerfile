@@ -1,14 +1,12 @@
-FROM alpine:3.21
+FROM debian:bookworm
 
-RUN apk update && \
-	apk add nginx openssl
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends nginx openssl
 
 RUN mkdir -p /var/www/html && chmod 755 /var/www/html &&\
-	chown -R nginx:nginx /var/www/html
+	chown -R www-data:www-data /var/www/html
 
 COPY ./conf/nginx_server.conf /
 COPY ./tools/script.sh /
-
-EXPOSE 443
 
 ENTRYPOINT ["/script.sh"]

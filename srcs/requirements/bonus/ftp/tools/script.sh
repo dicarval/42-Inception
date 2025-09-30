@@ -1,23 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 
 FT_PASS=$(cat ${FTP_PASSWORD:-/run/secrets/ftp_password})
 
-mkdir -p /home/$USER/wordpress
-chown root:root /home/$USER
-chmod 755 /home/$USER
-chmod a-w /home/$USER
+INIT_MARKER="/home/$USER/wordpress/.initialized"
 
-# Create FTP user and set password
-echo "Creating FTP user"
-adduser -D -h /home/$USER/wordpress $USER > /dev/null 2>&1
-echo "${USER}:${FT_PASS}" | chpasswd
+if [ ! -f "$INIT_MARKER" ]; then
 
-chown -R $USER:$USER /home/$USER/wordpress
-chmod g-s /home/$USER/wordpress
+  # Create FTP user and set password
+  echo "Creating FTP user"
+  adduser --gecos "" --disabled-password "$USER" > /dev/null 2>&1
+  usermod -d /home/"$USER"/wordpress "$USER"
+  chown -R "$USER":"$USER" /home/$USER/wordpress
+  echo "${USER}:${FT_PASS}" | chpasswd
 
-# Simple vsftpd.conf
-echo "Configuring the server"
-cat <<EOF > /etc/vsftpd/vsftpd.conf
+
+  # Simple vsftpd.conf
+  echo "Configuring the server"
+  cat <<EOF > /etc/vsftpd.conf
 listen=YES
 listen_ipv6=NO
 anonymous_enable=NO
@@ -36,15 +35,37 @@ xferlog_file=/var/log/vsftpd.log
 vsftpd_log_file=/var/log/vsftpd.log
 log_ftp_protocol=YES
 dual_log_enable=YES
-
-# Disable seccomp sandbox (fixes "child died" in some Alpine/container setups)
-seccomp_sandbox=NO
 EOF
 
-echo "Starting vsftpd..."
-mkdir -p /var/run/vsftpd/empty
-chmod 755 /var/run/vsftpd/empty
-touch /var/log/vsftpd.log
-chown root:root /var/log/vsftpd.log
+  mkdir -p /var/run/vsftpd/empty
+  chmod 755 /var/run/vsftpd/empty
+  touch $INIT_MARKER
+fi
 
-exec vsftpd /etc/vsftpd/vsftpd.conf
+echo "Starting vsftpd..."
+# start child and required process to gracefully stop the container
+vsftpd /etc/vsftpd.conf &
+VSFTPD_PID=$!
+
+graceful_stop() {
+  # send TERM to the PID
+  kill -TERM -- -"$VSFTPD_PID" 2>/dev/null || kill -TERM "$VSFTPD_PID" 2>/dev/null || true
+
+  # wait up to ~2s
+  for i in {1..20}; do
+    kill -0 "$VSFTPD_PID" 2>/dev/null || break
+    sleep 0.1
+  done
+
+  if kill -0 "$VSFTPD_PID" 2>/dev/null; then
+    echo "Escalating to KILL..."
+    kill -KILL -- -"$VSFTPD_PID" 2>/dev/null || kill -KILL "$VSFTPD_PID" 2>/dev/null || true
+  fi
+
+  wait "$VSFTPD_PID" 2>/dev/null || true
+  exit 0
+}
+
+trap graceful_stop SIGTERM SIGINT
+wait "$VSFTPD_PID"
+exit 0
