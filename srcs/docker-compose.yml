@@ -123,6 +123,21 @@ services:
       - mariadb
     restart: always
 
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:latest
+    env_file:
+      - .env
+    networks:
+      - inception
+    ports:
+      - "4194:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
+
 # SECRETS #
 secrets:
 
