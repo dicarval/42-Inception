@@ -9,7 +9,7 @@ up :
 	@mkdir -p /home/$(USER)/data/$(USER)$(DOMAIN_SUFFIX)/redis
 
 	@echo "Building the containers"
-	@docker compose -f ./srcs/docker-compose.yml up
+	@docker compose --env-file /home/dicarval/data/.env -f ./srcs/docker-compose.yml up
 
 down :
 	@echo "Removing Inception containers"

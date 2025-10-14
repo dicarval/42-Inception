@@ -15,7 +15,7 @@ services:
     volumes:
       - mariadb:/var/lib/mysql/.
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     environment:
       - ROOT_PASSWORD_FILE=/run/secrets/db_root_password
       - USER_PASSWORD_FILE=/run/secrets/db_user_password
@@ -34,7 +34,7 @@ services:
     volumes:
       - wordpress:/var/www/html
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     environment:
       - DB_PASSWORD_FILE=/run/secrets/db_root_password
       - ADMIN_PASSWORD_FILE=/run/secrets/wp_admin_password
@@ -58,7 +58,7 @@ services:
     volumes:
       - wordpress:/var/www/html
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     networks:
       - inception
     ports:
@@ -74,7 +74,7 @@ services:
     volumes:
       - redis:/data
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     networks:
       - inception
     expose:
@@ -89,7 +89,7 @@ services:
     volumes:
       - wordpress:/home/${USER}/wordpress
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     environment:
       - FTP_PASSWORD=/run/secrets/ftp_password
     secrets:
@@ -107,7 +107,7 @@ services:
     volumes:
       - parallax:/usr/share/nginx/html:ro
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     networks:
       - inception
     restart: always
@@ -127,7 +127,7 @@ services:
     container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:latest
     env_file:
-      - .env
+      - /home/${USER}/data/.env
     networks:
       - inception
     ports:
