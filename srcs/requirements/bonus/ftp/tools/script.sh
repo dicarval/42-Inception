@@ -43,13 +43,14 @@ EOF
 fi
 
 echo "Starting vsftpd..."
+
 # start child and required process to gracefully stop the container
 vsftpd /etc/vsftpd.conf &
 VSFTPD_PID=$!
 
 graceful_stop() {
   # send TERM to the PID
-  kill -TERM -- -"$VSFTPD_PID" 2>/dev/null || kill -TERM "$VSFTPD_PID" 2>/dev/null || true
+  kill -TERM -- -"$VSFTPD_PID" 2>/dev/null || kill -TERM "$VSFTPD_PID" 2>/dev/null
 
   # wait up to ~2s
   for i in {1..20}; do
@@ -58,11 +59,10 @@ graceful_stop() {
   done
 
   if kill -0 "$VSFTPD_PID" 2>/dev/null; then
-    echo "Escalating to KILL..."
-    kill -KILL -- -"$VSFTPD_PID" 2>/dev/null || kill -KILL "$VSFTPD_PID" 2>/dev/null || true
+    kill -KILL -- -"$VSFTPD_PID" 2>/dev/null || kill -KILL "$VSFTPD_PID" 2>/dev/null
   fi
 
-  wait "$VSFTPD_PID" 2>/dev/null || true
+  wait "$VSFTPD_PID" 2>/dev/null
   exit 0
 }
 
