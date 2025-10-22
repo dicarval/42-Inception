@@ -15,7 +15,6 @@ if [ ! -f "$INIT_MARKER" ]; then
 	# Start MariaDB temporarily for configuration
 	mariadbd-safe --user=mysql \
 	  --datadir=/var/lib/mysql \
-	  --bind-address=0.0.0.0 \
 	  --skip-networking > /dev/null 2>&1 &
 
 	# Wait for MariaDB to be ready
@@ -30,7 +29,6 @@ if [ ! -f "$INIT_MARKER" ]; then
 	mariadb -e "GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$USER'@'%' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
 	mariadb -e "FLUSH PRIVILEGES ;"
 
-	# Graceful shutdown
 	mariadb-admin shutdown
 	touch "$INIT_MARKER"
 fi
