@@ -3,7 +3,7 @@
 networks:
 
   inception:
-    name: ${USER}${DOMAIN_SUFFIX}
+    name: inception
     driver: bridge
 
 # SERVICES #
@@ -129,7 +129,7 @@ services:
     env_file:
       - /home/${USER}/data/.env
     environment:
-      - CHECK_INTERVAL=30
+      - CHECK_INTERVAL=60
     networks:
       - inception
     volumes:

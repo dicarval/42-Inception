@@ -47,6 +47,7 @@ if [ ! -f "$INIT_MARKER" ]; then
   wp config set WP_REDIS_CLIENT phpredis --allow-root --path="$WP_PATH" > /dev/null 2>&1
   wp config set WP_REDIS_HOST redis --allow-root --path="$WP_PATH" > /dev/null 2>&1
   wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_PATH" > /dev/null 2>&1
+
   # Install plugin but don't activate until Redis is reachable
   wp plugin install redis-cache --allow-root --path="$WP_PATH" > /dev/null 2>&1
   while ! nc -z redis 6379 > /dev/null 2>&1; do
@@ -55,6 +56,10 @@ if [ ! -f "$INIT_MARKER" ]; then
   done
   wp plugin activate redis-cache --allow-root --path="$WP_PATH" > /dev/null 2>&1
   wp redis enable --allow-root --path="$WP_PATH" > /dev/null 2>&1
+
+  chown -R www-data:www-data /var/www/html
+  find /var/www/html -type d -exec chmod 755 {} \; || true
+  find /var/www/html -type f -exec chmod 644 {} \; || true
 
   # Creating an user #
   echo "Creating user..."

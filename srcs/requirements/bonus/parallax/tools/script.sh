@@ -1,5 +1,5 @@
 #!/bin/bash
-DOMAIN="$USER$DOMAIN_SUFFIX"
+DOMAIN="dicarval.pt"
 PAR_CONF="/parallax_server.conf"
 
 if [ -f "$PAR_CONF" ]; then
