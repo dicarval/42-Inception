@@ -20,9 +20,10 @@ check_once() {
         INFO=$(curl -s --unix-socket "$DOCKER_SOCK" "http://localhost/containers/$ID/json")
         HEALTH=$(echo "$INFO" | jq -r '.State.Health.status // empty')
         STATUS=$(echo "$INFO" | jq -r '.State.Status // "unknown"')
-        # choose reported status
+        PID=$(echo "$INFO" | jq -r '.State.Pid // "unknown"')
+        # chosen reported status
         REP="${HEALTH:-$STATUS}"
-        echo "$(date -u +"%d-%m-%Y %H:%M:%S") $NAME : $REP"
+        echo "$(date -u +"%d-%m-%Y %H:%M:%S") PID: $PID - $NAME : $REP"
       done
 }
 

@@ -58,8 +58,8 @@ if [ ! -f "$INIT_MARKER" ]; then
   wp redis enable --allow-root --path="$WP_PATH" > /dev/null 2>&1
 
   chown -R www-data:www-data /var/www/html
-  find /var/www/html -type d -exec chmod 755 {} \; || true
-  find /var/www/html -type f -exec chmod 644 {} \; || true
+  find /var/www/html -type d -exec chmod 775 {} \;
+  find /var/www/html -type f -exec chmod 664 {} \;
 
   # Creating an user #
   echo "Creating user..."

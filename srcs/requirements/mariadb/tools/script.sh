@@ -35,7 +35,7 @@ fi
 
 echo "MariaDB is ready!"
 
-# Start as main container process
+# Start as main process
 exec mariadbd --user=mysql \
   --datadir=/var/lib/mysql \
   --bind-address=0.0.0.0 \
