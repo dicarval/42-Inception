@@ -9,7 +9,24 @@ fi
 
 echo "Healthchecker starting (interval=${CHECK_INTERVAL}s)"
 running=true
-sleep "$CHECK_INTERVAL"
+
+shutdown() {
+  running=false
+  # try to kill background jobs started by this shell
+  if [ -n "$CHECK_PID" ]; then
+    kill -TERM "$CHECK_PID" 2>/dev/null || true
+    wait "$CHECK_PID" 2>/dev/null || true
+  fi
+  # kill any background jobs (sleep etc)
+  for pid in $(jobs -p); do
+    kill -TERM "$pid" 2>/dev/null || true
+  done
+  if [ -n "$SLEEP_PID" ]; then
+    kill -TERM "$SLEEP_PID" 2>/dev/null || true
+  fi
+  exit 0
+}
+trap shutdown SIGTERM SIGINT
 
 check_once() {
   curl -s --unix-socket "$DOCKER_SOCK" http://localhost/containers/json?all=1 \
@@ -27,20 +44,10 @@ check_once() {
       done
 }
 
-shutdown() {
-  running=false
-  # try to kill background jobs started by this shell
-  for pid in $(jobs -p); do
-    kill "$pid" 2>/dev/null
-  done
-  # fallback: kill the whole process group of this shell
-  kill -TERM -- -$$ 2>/dev/null
-  exit 0
-}
-trap shutdown SIGTERM SIGINT
-
 while $running; do
-  check_once
-  sleep "$CHECK_INTERVAL" &
-  wait $!
+  sleep "$CHECK_INTERVAL" & SLEEP_PID=$!
+  # wait for the sleep to finish or be killed by shutdown()
+  wait "$SLEEP_PID" 2>/dev/null || true
+  check_once &
+  CHECK_PID=$!
 done
