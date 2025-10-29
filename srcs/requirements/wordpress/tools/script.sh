@@ -72,8 +72,6 @@ if [ ! -f "$INIT_MARKER" ]; then
   echo "Installing theme..."
   wp theme install feature --activate --allow-root > /dev/null 2>&1
 
-  # Initializing PHP FastCGI Process Manager #
-  echo "Initializing PHP-FPM..."
   touch "$INIT_MARKER"
 fi
 
