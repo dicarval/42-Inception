@@ -1,4 +1,4 @@
-# Inception
+#💻 Inception
 
 ## Project Overview
 A Docker-based infrastructure project that sets up a complete LEMP stack (Linux, Nginx, MariaDB, PHP) along with several bonus services.
